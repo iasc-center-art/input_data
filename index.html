@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b3d91">
+<title>Generator Simulasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#0b3d91;
+  --primary-dark:#082d6b;
+  --primary-light:#e8efff;
+  --success:#0f9d58;
+  --success-dark:#0b7a44;
+  --warning:#f59e0b;
+  --warning-bg:#fef7e0;
+  --warning-border:#fde68a;
+  --warning-text:#7a4b00;
+  --text:#0f1a2e;
+  --text-muted:#5b6b85;
+  --border:#e3e8f2;
+  --bg:#f4f6fb;
+  --surface:#ffffff;
+  --muted:#6c757d;
+  --radius:14px;
+  --radius-sm:10px;
+  --shadow-sm:0 1px 2px rgba(15,26,46,.06), 0 1px 3px rgba(15,26,46,.04);
+  --shadow-md:0 4px 12px rgba(11,61,145,.08), 0 2px 4px rgba(15,26,46,.04);
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;
+}
+
+/* Top bar */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:linear-gradient(135deg,var(--primary) 0%,#1256c4 100%);
+  color:#fff;
+  padding:14px 16px;
+  padding-top:calc(14px + env(safe-area-inset-top,0px));
+  box-shadow:var(--shadow-md);
+}
+.topbar-inner{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.logo{
+  width:38px;height:38px;
+  border-radius:10px;
+  background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:16px;letter-spacing:.5px;
+  border:1px solid rgba(255,255,255,.2);
+  flex-shrink:0;
+}
+.topbar h1{margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em;}
+.topbar .sub{margin:0;font-size:12px;opacity:.85;font-weight:500;}
+
+/* Layout */
+.container{
+  max-width:1200px;
+  margin:0 auto;
+  padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+}
+
+.box{min-width:0;}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px;
+  box-shadow:var(--shadow-sm);
+}
+
+h2{
+  margin:0 0 14px;
+  font-size:17px;
+  font-weight:800;
+  letter-spacing:-.01em;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+h2 .num{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--primary-light);
+  color:var(--primary);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;
+  flex-shrink:0;
+}
+
+/* Config panel */
+.config-panel{
+  background:linear-gradient(135deg,#fbfcff 0%,#f6f9ff 100%);
+  border:1px solid #dbe4f7;
+  border-radius:var(--radius-sm);
+  padding:14px;
+  margin-bottom:14px;
+}
+.config-panel h3{
+  margin:0 0 4px;
+  font-size:14px;
+  font-weight:700;
+  color:var(--primary);
+  display:flex;align-items:center;gap:8px;
+}
+.config-panel h3 svg{width:16px;height:16px;}
+.config-hint{
+  margin:0 0 12px;
+  font-size:12.5px;
+  color:var(--text-muted);
+  line-height:1.5;
+}
+.config-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:stretch;
+}
+.config-input-wrap{
+  flex:1 1 100%;
+  display:flex;
+  align-items:stretch;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
+  background:#fff;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.config-input-wrap:focus-within{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px rgba(11,61,145,.10);
+}
+.config-prefix{
+  padding:0 14px;
+  font-weight:700;
+  color:var(--primary);
+  background:var(--primary-light);
+  display:flex;align-items:center;
+  font-size:14px;
+  border-right:1px solid var(--border);
+}
+.config-input-wrap input{
+  flex:1;
+  min-width:0;
+  border:none;
+  background:transparent;
+  padding:12px 14px;
+  font-size:16px;
+  font-weight:600;
+  color:var(--text);
+  outline:none;
+  font-family:inherit;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.config-input-wrap input::placeholder{color:#9aa7bd;font-weight:500;}
+
+.config-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  width:100%;
+}
+.btn-config{
+  margin-top:0;
+  width:100%;
+  padding:12px 14px;
+  font-size:14px;
+  font-weight:700;
+  border:none;
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  font-family:inherit;
+  color:#fff;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  transition:transform .06s ease, filter .15s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-config svg{width:15px;height:15px;}
+.btn-config:active{transform:scale(.98);}
+.btn-config.save{background:linear-gradient(135deg,var(--primary) 0%,#1256c4 100%);}
+.btn-config.save:hover{filter:brightness(1.05);}
+.btn-config.reset{background:var(--muted);}
+.btn-config.reset:hover{background:#545b62;}
+
+.config-status{
+  margin-top:10px;
+  font-size:12.5px;
+  color:var(--success);
+  font-weight:700;
+  min-height:16px;
+  display:flex;align-items:center;gap:6px;
+}
+.config-status:not(:empty)::before{
+  content:"✓";
+  display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;
+  background:var(--success);color:#fff;
+  border-radius:50%;font-size:10px;font-weight:800;
+}
+
+/* Textareas */
+.textarea-wrap{position:relative;}
+textarea{
+  width:100%;
+  min-height:340px;
+  resize:vertical;
+  padding:14px;
+  font-size:14.5px;
+  font-family:'SF Mono',ui-monospace,'Menlo','Consolas',monospace;
+  line-height:1.55;
+  border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);
+  background:#fbfcfe;
+  color:var(--text);
+  outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  -webkit-appearance:none;
+  appearance:none;
+}
+textarea:focus{
+  border-color:var(--primary);
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(11,61,145,.10);
+}
+textarea::placeholder{color:#9aa7bd;}
+
+textarea#output{
+  background:#fbfcff;
+  border-color:#dbe4f7;
+}
+
+/* Buttons */
+.actions{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+button.btn{
+  width:100%;
+  padding:15px 18px;
+  border:none;
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  border-radius:var(--radius-sm);
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  transition:transform .06s ease, filter .15s ease, box-shadow .15s ease;
+  font-family:inherit;
+  letter-spacing:.01em;
+  min-height:52px;
+  -webkit-tap-highlight-color:transparent;
+}
+button.btn svg{width:18px;height:18px;}
+button.btn:active{transform:scale(.98);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--primary) 0%,#1256c4 100%);
+  box-shadow:0 4px 14px rgba(11,61,145,.28);
+}
+.btn-primary:hover{filter:brightness(1.05);}
+.btn-secondary{
+  background:linear-gradient(135deg,var(--success) 0%,#12b268 100%);
+  box-shadow:0 4px 14px rgba(15,157,88,.28);
+}
+.btn-secondary:hover{filter:brightness(1.05);}
+
+/* Notice */
+.notice{
+  background:var(--warning-bg);
+  border:1px solid var(--warning-border);
+  border-left:4px solid var(--warning);
+  color:var(--warning-text);
+  padding:12px 14px;
+  border-radius:var(--radius-sm);
+  margin-bottom:12px;
+  font-weight:700;
+  font-size:13.5px;
+  display:flex;align-items:center;gap:10px;
+  letter-spacing:.02em;
+}
+.notice svg{width:18px;height:18px;flex-shrink:0;}
+
+/* Toast */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  background:#0f1a2e;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:600;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+  z-index:100;
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast svg{width:16px;height:16px;color:#22c55e;}
+
+/* Mobile refinements */
+@media (max-width:520px){
+  .topbar h1{font-size:15px;}
+  .topbar .sub{font-size:11px;}
+  .card{padding:14px; border-radius:12px;}
+  textarea{min-height:280px; font-size:13.5px;}
+  h2{font-size:16px;}
+}
+
+/* Tablet+ */
+@media (min-width:900px){
+  .container{
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    padding:20px 20px calc(30px + env(safe-area-inset-bottom,0px));
+  }
+  textarea{min-height:520px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">IA</div>
+    <div>
+      <h1>Generator Simulasi</h1>
+      <p class="sub">Buat laporan IASC dari data masukan</p>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- INPUT -->
+  <section class="box">
+    <div class="card">
+      <h2><span class="num">1</span> Data Masukan</h2>
+
+      <div class="config-panel">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Biaya Aktivasi
+        </h3>
+        <p class="config-hint">Atur nominal biaya aktivasi untuk hasil generate. Nilai tersimpan di browser.</p>
+        <div class="config-row">
+          <div class="config-input-wrap">
+            <span class="config-prefix">Rp</span>
+            <input type="text" id="biaya-aktivasi" inputmode="numeric" placeholder="249.000" aria-label="Biaya aktivasi">
+          </div>
+          <div class="config-actions">
+            <button type="button" class="btn-config save" onclick="simpanBiayaAktivasi()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Simpan
+            </button>
+            <button type="button" class="btn-config reset" onclick="resetBiayaAktivasi()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              Reset
+            </button>
+          </div>
+        </div>
+        <div id="biaya-status" class="config-status"></div>
+      </div>
+
+      <div class="textarea-wrap">
+        <textarea id="input" placeholder="Tempel data laporan di sini (A/n rekening penerima, Bank / e-wallet penerima, Total kerugian, dll)"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="generate()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          GENERATE
+        </button>
+        <button class="btn btn-secondary" onclick="salinHasil()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Salin Hasil
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUTPUT -->
+  <section class="box">
+    <div class="card">
+      <h2><span class="num">2</span> Hasil Data IASC</h2>
+      <div class="notice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        HASIL LAPORAN IASC
+      </div>
+      <div class="textarea-wrap">
+        <textarea id="output" placeholder="Hasil akan muncul di sini setelah klik GENERATE"></textarea>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Berhasil</span>
+</div>
+
+<script src="../Get Data Aktivasi/iasc-data.js"></script>
+<script>
+initBiayaAktivasiUI();
+
+function initBiayaAktivasiUI() {
+  var input = document.getElementById("biaya-aktivasi");
+  if (!input || typeof iascGetBiayaAktivasi !== "function") return;
+  input.value = iascFormatNum(iascGetBiayaAktivasi());
+}
+
+function showBiayaStatus(msg) {
+  var el = document.getElementById("biaya-status");
+  if (el) el.textContent = msg || "";
+}
+
+function simpanBiayaAktivasi() {
+  var input = document.getElementById("biaya-aktivasi");
+  if (!input || typeof iascSetBiayaAktivasi !== "function") return;
+  if (!iascSetBiayaAktivasi(input.value)) {
+    alert("Nominal biaya aktivasi tidak valid.");
+    return;
+  }
+  input.value = iascFormatNum(iascGetBiayaAktivasi());
+  showBiayaStatus("Tersimpan: Rp " + iascFormatNum(iascGetBiayaAktivasi()) + ",-");
+}
+
+function resetBiayaAktivasi() {
+  if (typeof iascResetBiayaAktivasi === "function") {
+    iascResetBiayaAktivasi();
+  }
+  initBiayaAktivasiUI();
+  showBiayaStatus("Dikembalikan ke nilai iasc-config.json");
+}
+
+function ambil(label){
+  var text = document.getElementById("input").value;
+  if (typeof iascAmbil === "function") {
+    var v = iascAmbil(text, label);
+    return v !== "" ? v : "-";
+  }
+  var escaped = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  var rg = new RegExp(escaped + "\\s*:\\s*(.+)", "i");
+  var m = text.match(rg);
+  return m ? m[1].trim() : "-";
+}
+
+function angka(v){
+  return parseInt(String(v).replace(/[^\d]/g,'')) || 0;
+}
+
+function rupiah(x){
+  return "Rp." + x.toLocaleString("id-ID");
+}
+
+function generate(){
+  var inputText = document.getElementById("input").value;
+  var parsed = typeof iascParseInput === "function" ? iascParseInput(inputText) : null;
+  var nama, bank, kerugian, aktivasi;
+  if (parsed) {
+    nama = parsed.nama;
+    bank = parsed.bank;
+    kerugian = parsed.kerugian;
+    aktivasi = parsed.aktivasi;
+  } else {
+    nama = ambil("A/n rekening penerima");
+    bank = ambil("Bank / e-wallet penerima");
+    kerugian = angka(ambil("Total kerugian"));
+    aktivasi = typeof iascGetBiayaAktivasi === "function" ? iascGetBiayaAktivasi() : 249000;
+  }
+  if (nama === "-" || bank === "-" || kerugian <= 0) {
+    showToast("Data belum lengkap — cek label & Total kerugian");
+    return;
+  }
+  var total = kerugian + aktivasi;
+
+  var hasil = `Berdasarkan hasil laporan di website IASC, saat ini statusnya masih Pending (Belum Aktivasi Saldo).
+Penjelasannya, dana sebesar ${rupiah(kerugian)} yang berada di rekening pelaku telah berhasil dibekukan sehingga tidak dapat digunakan. Namun, sesuai informasi yang diterima, dana tersebut masih berstatus belum aktif sehingga belum bisa diproses untuk dikirim kepada pemilik yang berhak.
+
+Rincian Data Perbankan
+Nama Rekening : *${nama}*
+Bank : *${bank}*
+Saldo Utama : *${rupiah(kerugian)}*
+Biaya aktivasi saldo: *${rupiah(aktivasi)}*
+Total dana yang akan diterima : *${rupiah(total)}*
+
+Saldo belum di aktivasi, setelah anda aktivasi saldo yang di bekukan di rekening pelaku maka total dana yang akan diterima di rekening *${bank}* atas nama *${nama}* adalah sebesar *${rupiah(total)}*
+`;
+  document.getElementById("output").value = hasil;
+  showToast("Hasil berhasil dibuat");
+}
+
+function salinHasil() {
+  var output = document.getElementById("output");
+  var text = output.value;
+  if (!text.trim()) {
+    showToast("Belum ada hasil untuk disalin");
+    return;
+  }
+
+  function copyViaTextarea() {
+    output.focus();
+    output.select();
+    output.setSelectionRange(0, text.length);
+    try {
+      return document.execCommand("copy");
+    } catch (e) {
+      return false;
+    }
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(function () {
+      showToast("Hasil berhasil disalin");
+    }).catch(function () {
+      if (copyViaTextarea()) {
+        showToast("Hasil berhasil disalin");
+      } else {
+        showToast("Gagal salin — pilih teks di kolom hasil lalu Ctrl+C");
+      }
+    });
+    return;
+  }
+
+  if (copyViaTextarea()) {
+    showToast("Hasil berhasil disalin");
+  } else {
+    showToast("Gagal salin — pilih teks di kolom hasil lalu Ctrl+C");
+  }
+}
+
+var toastTimer = null;
+function showToast(msg){
+  var t = document.getElementById("toast");
+  var m = document.getElementById("toast-msg");
+  if (!t || !m) return;
+  m.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+}
+</script>
+
+</body>
+</html>
