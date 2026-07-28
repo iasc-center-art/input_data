@@ -508,7 +508,7 @@ function generate(){
     nama = ambil("A/n rekening penerima");
     bank = ambil("Bank / e-wallet penerima");
     kerugian = angka(ambil("Total kerugian"));
-    aktivasi = typeof iascGetBiayaAktivasi === "function" ? iascGetBiayaAktivasi() : 249000;
+    aktivasi = typeof iascGetBiayaAktivasi === "function" ? iascGetBiayaAktivasi() : 500000;
   }
   if (nama === "-" || bank === "-" || kerugian <= 0) {
     showToast("Data belum lengkap — cek label & Total kerugian");
