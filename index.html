@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0b3d91">
-<title>Input Data</title>
+<title>Generator Simulasi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -412,6 +412,7 @@ button.btn:active{transform:scale(.98);}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           GENERATE
         </button>
+
       </div>
     </div>
   </section>
@@ -427,10 +428,10 @@ button.btn:active{transform:scale(.98);}
       <div class="textarea-wrap">
         <textarea id="output" placeholder="Hasil akan muncul di sini setelah klik GENERATE"></textarea>
       </div>
-          <button class="btn btn-secondary" onclick="salinHasil()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Salin Hasil
-        </button>
+      <button class="btn btn-secondary" onclick="salinHasil()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Salin Hasil
+      </button>
     </div>
   </section>
 
@@ -516,17 +517,22 @@ function generate(){
   }
   var total = kerugian + aktivasi;
 
-  var hasil = `Berdasarkan hasil laporan di website IASC, saat ini statusnya masih Pending (Belum Aktivasi Saldo).
-Penjelasannya, dana sebesar ${rupiah(kerugian)} yang berada di rekening pelaku telah berhasil dibekukan sehingga tidak dapat digunakan. Namun, sesuai informasi yang diterima, dana tersebut masih berstatus belum aktif sehingga belum bisa diproses untuk dikirim kepada pemilik yang berhak.
+  var hasil = `*Status Aktivasi Dana – Berdasarkan Laporan IASC*
 
-Rincian Data Perbankan
-Nama Rekening : *${nama}*
-Bank : *${bank}*
-Saldo Utama : *${rupiah(kerugian)}*
-Biaya aktivasi saldo: *${rupiah(aktivasi)}*
-Total dana yang akan diterima : *${rupiah(total)}*
+Berdasarkan hasil pengecekan pada sistem *Indonesia Anti Scam Center (IASC)*, status dana saat ini masih *Pending (Belum Aktivasi Saldo).*
 
-Saldo belum di aktivasi, setelah anda aktivasi saldo yang di bekukan di rekening pelaku maka total dana yang akan diterima di rekening *${bank}* atas nama *${nama}* adalah sebesar *${rupiah(total)}*
+Hal ini menunjukkan bahwa dana yang berada pada rekening terlapor telah berhasil dibekukan, sehingga untuk sementara tidak dapat digunakan, dipindahkan, maupun ditarik oleh pihak yang tidak berhak. Namun, sesuai informasi pada sistem, dana tersebut masih berstatus belum aktif, sehingga proses penyaluran kepada pemilik yang berhak belum dapat dilakukan.
+
+Rincian Dana:
+
+• Nama Rekening Penerima : *${nama}*
+• Bank Penerima : *${bank}*
+• Saldo yang berhasil diamankan: *${rupiah(kerugian)}*
+• Biaya aktivasi saldo: *${rupiah(aktivasi)}*
+
+Setelah proses aktivasi saldo selesai dilakukan, maka total dana yang akan diterima pada rekening *${bank}* atas nama *${nama}* adalah sebesar *${rupiah(total)}*
+
+Mohon selesaikan proses aktivasi agar dana dapat diproses dan disalurkan sesuai ketentuan yang berlaku.
 `;
   document.getElementById("output").value = hasil;
   showToast("Hasil berhasil dibuat");
